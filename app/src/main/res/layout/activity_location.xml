@@ -20,7 +20,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:onClick="getLastLocation"
-        android:text="Get Location"
+        android:text="@string/update_location"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
@@ -30,9 +30,10 @@
         android:id="@+id/fabAcceptLocation"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_margin="@dimen/fab_margin"
         android:clickable="true"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        android:layout_margin="@dimen/fab_margin"
-        app:srcCompat="?android:attr/textCheckMark" />
+        app:srcCompat="@drawable/ic_baseline_done_24"
+        android:contentDescription="@string/save_data" />
 </androidx.constraintlayout.widget.ConstraintLayout>
