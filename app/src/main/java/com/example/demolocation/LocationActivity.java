@@ -25,8 +25,10 @@ import static com.google.android.gms.location.LocationServices.getFusedLocationP
 
 public class LocationActivity extends AppCompatActivity {
 
+    // Variables to link the intent data returned from this activity
     public static final String EXTRA_REPLY_LATITUDE = "com.example.demolocation.extra.LAT";
     public static final String EXTRA_REPLY_LONGITUDE = "com.example.demolocation.extra.LONG";
+
     // user as the value to link a request for location permission to the
     // onRequestPermissionsResult callback in this activity
     public static final int LOCATION_PERMISSION_ID = 100;
@@ -35,7 +37,7 @@ public class LocationActivity extends AppCompatActivity {
     // relies on google play services SDK
     private FusedLocationProviderClient mFusedLocationClient;
 
-    // Populated with the current location
+    // Populated with the current location by mFusedLocationClient
     private double CurrentLat = 0;
     private double CurrentLng = 0;
 
@@ -70,6 +72,9 @@ public class LocationActivity extends AppCompatActivity {
         requestLocationPermissions();
     }
 
+    /**
+     * Closes this activity sending back the current locations latitude and longitude
+     */
     public void closeActivity() {
         // Create an intent
         Intent replyIntent = new Intent();
@@ -113,8 +118,6 @@ public class LocationActivity extends AppCompatActivity {
         startActivity(intent);
     }
 
-    /* Android permissions methods */
-    // method to check for permissions
 
     /**
      * Checks that permissions have been granted for fine and coarse location checking
@@ -154,29 +157,41 @@ public class LocationActivity extends AppCompatActivity {
     }
 
     /**
+     * This is a callback method triggered by all calls to ActivityCompat.requestPermissions
+     * when the request returns.
      *
-     * @param requestCode
-     * @param permissions
-     * @param grantResults
+     * @param requestCode  Request code is the last value passed to
+     *                     ActivityCompat.requestPermissions it allows you to identify which
+     *                     request returned a result use if or switch to choose what to do.
+     * @param permissions  an array containing the permissions
+     * @param grantResults an array containing whether they were granted 1 or 0
      */
     @SuppressLint("MissingPermission")
     @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults);
-        if(requestCode == LOCATION_PERMISSION_ID) {
-            // If request is cancelled, the result arrays are empty.
 
+        // If the results returned are linked to the request in  requestLocationPermissions()
+        if(requestCode == LOCATION_PERMISSION_ID) {
+
+            // If the request was cancelled, the result arrays will be empty.
             if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+
+                // Request wasn't cancelled call the get location and add listener to the task returned
+                // in this case the update method in this class is the listener
                 mFusedLocationClient.getLastLocation().addOnSuccessListener(this, this::update);
             } else {
+                // Oops looks like the user cancelled the permission
                 Toast.makeText(this, "Permission denied", Toast.LENGTH_SHORT).show();
             }
         }
     }
 
     /**
+     * This is the method called by success listener attached to the task created by
+     * mFusedLocationClient.getLastLocation() the task sends the location object
      *
-     * @param location
+     * @param location A location object containing the current location of the device
      */
     public void update(Location location){
 
